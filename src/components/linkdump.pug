@@ -1,0 +1,49 @@
+.container
+  .md-layout.header Link Tracker
+  .md-layout.new-link-toggle
+    a(@click = 'newLinkToggle = !newLinkToggle') New Link {{ newLinkToggle ? '⮝' : '⮟' }}
+
+  .md-layout.bg-gray
+    .new-link(:class = "{ closed: !newLinkToggle }")
+      .category-toggle
+        | Add to Category: 
+        .category-link(:class = "{ current: catIndex == categoryCurrent }" 
+                       v-for = "(category, catIndex) in storage"
+                       @click = "categoryCurrent = catIndex") {{ category.name }}
+        |  [ 
+        a.new-category(@click = "addCategory") +
+        |  ]
+
+      md-field(:md-counter = "false")
+        md-input(v-model = "newLink"
+                 placeholder = "http://link.my"
+                 maxlength = "300")
+
+      md-field(:md-counter = "false")
+        md-input(v-model = "newLinkDescription"
+                 placeholder = "Watch Later"
+                 maxlength = "300")
+      
+      .new-link-button
+        md-button.md-primary.md-raised(@click = "addLink()"
+                                       :disabled = "!newLinkDescription || !newLink") Commit
+  
+  .md-layout
+    .link-lists
+      .link-list(v-for = "(category, catIndex) in storage")
+        .link-list-title
+          span(v-if = "!storage[catIndex].edit") {{ category.name }}
+          .edit-catname-toggle(@click = "toggleCategoryRename(catIndex)") ✎
+
+          .link-list-title-editor(v-if = "storage[catIndex].edit") 
+            md-field(:md-counter = "false")
+              md-input(v-model = "storage[catIndex].name" 
+                       maxlength = "30" 
+                       @blur = "toggleCategoryRename(catIndex)")
+
+        .link-list-item(v-for = "(link, linkIndex) in category.links")
+          a(href = "link.url" target = "_blank") {{ link.description }}
+          span(@click = "removeLink(catIndex, linkIndex)") ✖
+
+  template
+    disclaimer
