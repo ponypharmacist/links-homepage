@@ -55,10 +55,6 @@
 
 <script>
 /* eslint-disable */
-import { readLocalStorage,
-         updateLocalStorage,
-         clearLocalStorage,
-         getTitle } from './helpers';
 export default {
   name:'app',
   data() {
@@ -78,10 +74,6 @@ export default {
             {
               url: 'http://glinskiy.net',
               description: 'Glinskiy.net'
-            },
-            {
-              url: 'http://google.com',
-              description: 'Google'
             }
           ]
         }
@@ -91,11 +83,13 @@ export default {
 
   // on Mounted
   mounted() {
-    // clearLocalStorage('myLinks');
-    if (readLocalStorage('myLinks')) {
-      this.storage = readLocalStorage('myLinks');
+    // this.clearLocalStorage('myLinks');
+    if (this.readLocalStorage('myLinks')) {
+      this.storage = this.readLocalStorage('myLinks');
     } else {
-      this.storage = [{ name: 'Anime', edit: false }];
+      this.storage = [{ 
+        name: 'Anime', edit: false, links: [{ url: 'http://glinskiy.net', description: 'Glinskiy.net' }]
+      }];
       this.updateAll();
     }
   },
@@ -109,6 +103,18 @@ export default {
 
   // Methods
   methods: {
+    readLocalStorage (localName) {
+      return JSON.parse(localStorage.getItem(localName))
+    },
+
+    updateLocalStorage (data, localName) {
+      localStorage.setItem(localName, JSON.stringify(data))
+    },
+
+    clearLocalStorage (localName) {
+      localStorage.removeItem(localName)
+    },
+
     addCategory () {
       let newCategory = {
         name: 'New Category',
@@ -141,8 +147,8 @@ export default {
     },
     
     updateAll () {
-      updateLocalStorage(this.storage, 'myLinks');
-      this.storage = readLocalStorage('myLinks');
+      this.updateLocalStorage(this.storage, 'myLinks');
+      this.storage = this.readLocalStorage('myLinks');
     },
 
     toggleCategoryRename (catIndex) {
