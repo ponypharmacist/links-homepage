@@ -43,7 +43,7 @@
                         @blur = "toggleCategoryRename(catIndex)")
 
           .link-list-item(v-for = "(link, linkIndex) in category.links")
-            a(href = "link.url" target = "_blank") {{ link.description }}
+            a(:href = "link.url" target = "_blank") {{ link.description }}
             span(@click = "removeLink(catIndex, linkIndex)") ✖
 
     .disclaimer 
@@ -65,7 +65,7 @@ export default {
       newLinkDescription: '',
 
       storage: [
-        // A category
+          // A category
         {
           name: 'Anime',
           edit: false,
